@@ -1,4 +1,6 @@
 example
 src
+tests
 .gitignore
+babel.config.js
 tsconfig.json

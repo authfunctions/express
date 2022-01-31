@@ -1,10 +1,12 @@
 import { Router } from "express";
 import createRouter from "./router";
+import { PasswordValidationRules } from "./validationUtils";
 
 export interface IConfig {
   accessTokenSecret: string;
   refreshTokenSecret: string;
   expiresIn?: number;
+  passwordValidation?: PasswordValidationRules
 }
 
 export interface IUserData {
@@ -80,6 +82,7 @@ export class AuthInstance {
   private accessTokenSecret: string;
   private refreshTokenSecret: string;
   private expiresIn: number;
+  private passwordRule: PasswordValidationRules
   private useEvents: IUseEvents;
   public authRouter: Router;
 
@@ -89,6 +92,7 @@ export class AuthInstance {
     this.accessTokenSecret = config.accessTokenSecret;
     this.refreshTokenSecret = config.refreshTokenSecret;
     this.expiresIn = config.expiresIn || 900;
+    this.passwordRule = config.passwordValidation || "Y-Y-Y-N-8"
 
     //default all useEvents to undefined
     this.useEvents = {};
