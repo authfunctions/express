@@ -1,5 +1,5 @@
-//replace "../dist" with "@authfunctions/express"
-import { AuthInstance } from "../src";
+//replace "../src" with "@authfunctions/express"
+import Auth from "../src";
 import express from "express";
 
 //the user interface
@@ -19,7 +19,7 @@ const TokenDatabase: string[] = [];
 const UserDatabase: IUser[] = [];
 
 //create a new instance of authfunctions
-const auth = new AuthInstance({
+const auth = new Auth({
   accessTokenSecret: "YOUR SECRET FOR THE ACCESS TOKENS",
   refreshTokenSecret: "YOUR SECRET FOR THE REFRESH TOKENS",
 
@@ -27,7 +27,7 @@ const auth = new AuthInstance({
   expiresIn: 900,
 
   //enable password validation
-  passwordValidation: "Y-Y-N-Y-8",
+  passwordValidation: "Y-Y-Y-Y-8",
   // Y = yes; N = no;
   // Y-Y-N-Y-8
   // │ │ │ │ └── minimum length of a password
@@ -35,6 +35,9 @@ const auth = new AuthInstance({
   // │ │ └────── password must use numbers
   // │ └──────── password must use lowercase characters
   // └────────── password must use uppercase characters
+
+  //enable email validation (alredy enabled by default, explicitly set just to show how it works)
+  emailValidation: true,
 });
 
 //setup the express app to use the authfunctions router
@@ -43,7 +46,15 @@ const app = express();
 app.use(express.json());
 
 //use the router exported by the AuthInstance with the prefix of /auth
-app.use("/auth", auth.authRouter);
+app.use("/auth", auth.Router);
+
+//cumstom logger support (defaulted to use the standard level)
+//Levels:
+// - "error": gets called when a critical error occured
+// - "warn":  gets called when a fixable error occured to notify the user
+// - "info":  gets called when an event or so runs successfully
+// - "debug": ges called to provide debug informations
+auth.logger((level, data) => console[level](`[${level.toUpperCase()}]:`, data));
 
 //all possible events used with authfunctions
 //Notes:

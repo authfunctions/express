@@ -1,18 +1,32 @@
 import { Router } from "express";
-import createRouter from "./router";
+import { createRouter } from "./router";
 import { PasswordValidationRules } from "./validationUtils";
 
 export interface IConfig {
   accessTokenSecret: string;
   refreshTokenSecret: string;
   expiresIn?: number;
-  passwordValidation?: PasswordValidationRules
+  passwordValidation?: PasswordValidationRules;
+  emailValidation?: boolean;
 }
 
 export interface IUserData {
+  id: string;
   email: string;
   username: string;
   hashedPassword: string;
+}
+
+export interface PassedInfos {
+  run_use: RunUse;
+  run_logger: any;
+  config: {
+    accessTokenSecret: string;
+    refreshTokenSecret: string;
+    expiresIn: number;
+    passwordValidation: PasswordValidationRules;
+    emailValidation: boolean;
+  };
 }
 
 export interface IUseEvents {
@@ -77,28 +91,36 @@ export type RunUse = <T extends UseEventDataTypes>(
   data: UseEventData<T>,
 ) => Promise<UseEventReturnValueSync<T> | null>;
 
+type LogLevels = "error" | "warn" | "info" | "debug";
+
+export type LoggerFunction = (level: LogLevels, data: any) => void;
+
+let loggerFunction: LoggerFunction = (level, data) => console[level](data);
+let useEvents: IUseEvents = {}
+
 export class AuthInstance {
   //type definitions
-  private accessTokenSecret: string;
-  private refreshTokenSecret: string;
-  private expiresIn: number;
-  private passwordRule: PasswordValidationRules
-  private useEvents: IUseEvents;
-  public authRouter: Router;
+  public Router: Router;
 
   //constructor (config values defaulter)
   constructor(config: IConfig) {
-    //set all config vars
-    this.accessTokenSecret = config.accessTokenSecret;
-    this.refreshTokenSecret = config.refreshTokenSecret;
-    this.expiresIn = config.expiresIn || 900;
-    this.passwordRule = config.passwordValidation || "Y-Y-Y-N-8"
+    //default the logger function
 
     //default all useEvents to undefined
-    this.useEvents = {};
+    useEvents = {};
 
-    //the express router config
-    this.authRouter = createRouter(this.run_use);
+    //the express router configuration with defaults
+    this.Router = createRouter({
+      config: {
+        accessTokenSecret: config.accessTokenSecret,
+        refreshTokenSecret: config.refreshTokenSecret,
+        expiresIn: config.expiresIn || 900,
+        passwordValidation: config.passwordValidation || "Y-Y-Y-N-8",
+        emailValidation: config.emailValidation || true,
+      },
+      run_logger: this.run_logger,
+      run_use: this.run_use,
+    });
   }
 
   //run a use callback
@@ -107,10 +129,10 @@ export class AuthInstance {
     data: UseEventData<T>,
   ): Promise<UseEventReturnValueSync<T> | null> {
     //return null if the run event is unused
-    if (!this.useEvents[event]) return null;
+    if (!useEvents[event]) return null;
 
     //run the callback and return its return value
-    return await (this.useEvents[event] as any)(data);
+    return await (useEvents[event] as any)(data);
   }
 
   //the use event function
@@ -119,9 +141,17 @@ export class AuthInstance {
     callback: (data: UseEventData<T>) => UseEventReturnValue<T>,
   ) {
     //set the useEvents[event] to the provided callback
-    (this.useEvents[event] as any) = callback;
+    (useEvents[event] as any) = callback;
   }
 
-  //the express middleware for vaildating a token
-  public async authMiddleWare() {}
+  //the logger function
+  public logger(cb: LoggerFunction) {
+    loggerFunction = cb;
+  }
+
+  //the run logger function
+  run_logger(level: LogLevels, data: any) {
+    // console[level](data)
+    loggerFunction(level, data);
+  }
 }

@@ -14,15 +14,14 @@ export function internal_sendError(
   res: Response,
   httpStatus: number,
   code: number,
-  data: any,
 ) {
-  internal_sendAuthData(res, httpStatus, code, data, true)
+  internal_sendAuthData(res, httpStatus, code, null, true)
 }
 
 export function internal_sendServerError(
   res: Response,
 ) {
-  internal_sendAuthData(res, 500, 5, null, true)
+  internal_sendError(res, 500, 5)
 }
 
 export function sendData(

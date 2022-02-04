@@ -1,5 +1,6 @@
 const {
   parsePasswordRules,
+  validateEmail,
   validatePassword,
 } = require("../src/validationUtils");
 
@@ -66,39 +67,53 @@ describe("parsePasswordRules tests", () => {
 });
 
 describe("validatePassword tests", () => {
-  test("Abc123?! should be valid for Y-Y-Y-Y-8", () => {
+  test("test Y-Y-Y-Y-8 with Abc123?!  -> valid", () => {
     expect(validatePassword("Abc123?!", "Y-Y-Y-Y-8")).toBe(true);
   });
 
-  test("Abc123 should be valid for Y-Y-Y-N-6", () => {
+  test("test Y-Y-Y-N-6 with Abc123    -> valid", () => {
     expect(validatePassword("Abc123", "Y-Y-Y-N-6")).toBe(true);
   });
 
-  test("Abc should be valid for Y-Y-N-N-3", () => {
+  test("test Y-Y-N-N-3 with Abc       -> valid", () => {
     expect(validatePassword("Abc", "Y-Y-N-N-3")).toBe(true);
   });
 
-  test("A should be valid for Y-N-N-N-1", () => {
+  test("test Y-N-N-N-1 with A         -> valid", () => {
     expect(validatePassword("A", "Y-N-N-N-1")).toBe(true);
   });
 
-  test("A should be invalid for Y-Y-Y-Y-9", () => {
+  test("test Y-Y-Y-Y-9 with A         -> invalid", () => {
     expect(validatePassword("A", "Y-Y-Y-Y-9")).toBe(false);
   });
 
-  test("Abc should be invalid for Y-Y-Y-Y-9", () => {
+  test("test Y-Y-Y-Y-9 with Abc       -> invalid", () => {
     expect(validatePassword("Abc", "Y-Y-Y-Y-9")).toBe(false);
   });
 
-  test("Abc123 should be invalid for Y-Y-Y-Y-9", () => {
+  test("test Y-Y-Y-Y-9 with Abc123    -> invalid", () => {
     expect(validatePassword("Abc123", "Y-Y-Y-Y-9")).toBe(false);
   });
 
-  test("Abc123?! should be invalid for Y-Y-Y-Y-9", () => {
+  test("test Y-Y-Y-Y-9 with Abc123?!  -> invalid", () => {
     expect(validatePassword("Abc123?!", "Y-Y-Y-Y-9")).toBe(false);
   });
 
-  test("Abc123?!. should be invalid for Y-Y-Y-Y-9", () => {
+  test("test Y-Y-Y-Y-9 with Abc123?!. -> valid", () => {
     expect(validatePassword("Abc123?!.", "Y-Y-Y-Y-9")).toBe(true);
   });
 });
+
+describe("validateEmail tests", () => {
+  test("test a       -> invalid", () => {
+    expect(validateEmail("a")).toBe(false)
+  })
+
+  test("test a@b     -> invalid", () => {
+    expect(validateEmail("a@b")).toBe(false)
+  })
+  
+  test("test a@b.com -> valid", () => {
+    expect(validateEmail("a@b.com")).toBe(true)
+  })
+})

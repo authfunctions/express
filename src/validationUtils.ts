@@ -54,7 +54,13 @@ export function validatePassword(
     if (!/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(password))
       valid = false;
   }
-  if(password.length < parsedRules.minLength) valid = false
+  if (password.length < parsedRules.minLength) valid = false;
 
-  return valid
+  return valid;
+}
+
+export function validateEmail(email: string) {
+  return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+    email,
+  );
 }

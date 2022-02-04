@@ -1,11 +1,16 @@
 import { JwtPayload, sign, verify } from "jsonwebtoken";
+import { IUserData } from "./AuthInstance.class";
 
 export function generateToken(
-  payload: string | object | Buffer,
+  payload: Omit<IUserData, "hashedPassword">,
   secret: string,
   expiresIn?: number,
 ) {
-  return sign(payload, secret, { expiresIn: expiresIn });
+  return sign(
+    payload,
+    secret,
+    expiresIn ? { expiresIn: expiresIn } : undefined,
+  );
 }
 
 export function decodeToken<Payload>(
