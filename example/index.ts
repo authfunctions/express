@@ -1,5 +1,5 @@
-//replace "../src" with "@authfunctions/express"
-import Auth from "../src";
+//replace "../dist" with "@authfunctions/express"
+import Auth from "../dist";
 import express from "express";
 
 //the user interface
