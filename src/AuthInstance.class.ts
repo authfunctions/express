@@ -150,7 +150,7 @@ export class AuthInstance {
   }
 
   //the run logger function
-  run_logger(level: LogLevels, data: any) {
+  private run_logger(level: LogLevels, data: any) {
     // console[level](data)
     loggerFunction(level, data);
   }
