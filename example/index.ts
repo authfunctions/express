@@ -1,5 +1,6 @@
 //replace "../dist" with "@authfunctions/express"
 import Auth from "../dist";
+import cors from "cors";
 import express from "express";
 
 //the user interface
@@ -41,8 +42,9 @@ const auth = new Auth({
 });
 
 //setup the express app to use the authfunctions router
-//init a basic app with json support (body parsing)
+//init a basic app with json support (body parsing) and cors
 const app = express();
+app.use(cors)
 app.use(express.json());
 
 //use the router exported by the AuthInstance with the prefix of /auth
