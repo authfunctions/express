@@ -1,6 +1,6 @@
 {
   "name": "@authfunctions/express",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "main": "dist/index.js",
   "repository": "https://github.com/authfunctions/express.git",
   "author": "laurenz1606 <laurenz.rausche@gmail.com>",
@@ -31,5 +31,9 @@
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
     "uuid": "^8.3.2"
-  }
+  },
+  "files": [
+    "dist",
+    "CODES.txt"
+  ]
 }
