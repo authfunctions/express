@@ -156,6 +156,6 @@ auth.use("deleteToken", async ({ token }) => {
 });
 
 //make express listen on port 3000
-app.listen(3000, () => {
-  console.log("@authfunctions/express Demo Application running on Port 3000");
+app.listen(5000, () => {
+  console.log("@authfunctions/express Demo Application running on Port 5000");
 });
