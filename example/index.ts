@@ -44,7 +44,7 @@ const auth = new Auth({
 //setup the express app to use the authfunctions router
 //init a basic app with json support (body parsing) and cors
 const app = express();
-app.use(cors)
+app.use(cors());
 app.use(express.json());
 
 //use the router exported by the AuthInstance with the prefix of /auth
@@ -155,7 +155,7 @@ auth.use("deleteToken", async ({ token }) => {
   }
 });
 
-//make express listen on port 3000
+//make express listen on port 5000
 app.listen(5000, () => {
   console.log("@authfunctions/express Demo Application running on Port 5000");
 });

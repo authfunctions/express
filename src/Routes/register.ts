@@ -71,7 +71,7 @@ export default ({ config, run_logger, run_use }: PassedInfos) => {
 
       //check if the username is alredy used
       if (user2) {
-        run_logger("info", "The Usernamee is alredy used!");
+        run_logger("info", "The Username is alredy used!");
         return internal_sendError(res, 403, 15);
       }
 
