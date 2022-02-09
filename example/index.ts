@@ -1,15 +1,7 @@
 //replace "../dist" with "@authfunctions/express"
-import Auth from "../dist";
+import Auth, { IPayload, IUserData, sendData } from "../dist";
 import cors from "cors";
 import express from "express";
-
-//the user interface
-interface IUser {
-  id: string;
-  email: string;
-  username: string;
-  hashedPassword: string;
-}
 
 //for example purpose we create an array as a database for the tokens '(tokens being the refreshTokens of all users)
 //you would use something like redis
@@ -17,7 +9,7 @@ const TokenDatabase: string[] = [];
 
 //for example purpose we create an array as a database for all users
 //you would use something like MongoDB or PostgreSQL
-const UserDatabase: IUser[] = [];
+const UserDatabase: IUserData[] = [];
 
 //create a new instance of authfunctions
 const auth = new Auth({
@@ -153,6 +145,16 @@ auth.use("deleteToken", async ({ token }) => {
     //return that an error has occured
     return [true];
   }
+});
+
+//a test endpoint to demonstrate the use
+app.get("/api/test", auth.validateMiddleware, (req, res) => {
+  //get the payload of the user from the previous middleware via res.locals
+  const Payload: IPayload = res.locals.payload;
+
+  //send the username as an example response
+  //Note: don't use res.json, because authfunction addes some auth information to every response so res.json would not work
+  sendData(res, 200, { name: Payload.username });
 });
 
 //make express listen on port 5000

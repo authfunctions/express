@@ -6,7 +6,7 @@ export default async (
   login: string,
   run_use: RunUse,
   run_logger: LoggerFunction,
-  res: Response
+  res: Response,
 ): Promise<[boolean, IUserData | null]> => {
   //get the user with login as username
   const user1 = await run_use("getUserByName", { username: login });
@@ -42,5 +42,5 @@ export default async (
     return [true, null];
   }
 
-  return [false, user1[1] || user2[1]]
+  return [false, user1[1] || user2[1]];
 };

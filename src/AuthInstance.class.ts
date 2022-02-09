@@ -1,5 +1,6 @@
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { createRouter } from "./router";
+import { createMiddleware } from "./validateTokenMiddleware";
 import { PasswordValidationRules } from "./validationUtils";
 
 export interface IConfig {
@@ -16,6 +17,8 @@ export interface IUserData {
   username: string;
   hashedPassword: string;
 }
+
+export type IPayload = Omit<IUserData, "hashedPassword">;
 
 export interface PassedInfos {
   run_use: RunUse;
@@ -96,11 +99,16 @@ type LogLevels = "error" | "warn" | "info" | "debug";
 export type LoggerFunction = (level: LogLevels, data: any) => void;
 
 let loggerFunction: LoggerFunction = (level, data) => console[level](data);
-let useEvents: IUseEvents = {}
+let useEvents: IUseEvents = {};
 
 export class AuthInstance {
   //type definitions
   public Router: Router;
+  public validateMiddleware: (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => any;
 
   //constructor (config values defaulter)
   constructor(config: IConfig) {
@@ -109,8 +117,8 @@ export class AuthInstance {
     //default all useEvents to undefined
     useEvents = {};
 
-    //the express router configuration with defaults
-    this.Router = createRouter({
+    //create the props configuration with defaults
+    const props = {
       config: {
         accessTokenSecret: config.accessTokenSecret,
         refreshTokenSecret: config.refreshTokenSecret,
@@ -120,7 +128,13 @@ export class AuthInstance {
       },
       run_logger: this.run_logger,
       run_use: this.run_use,
-    });
+    };
+
+    //the express router
+    this.Router = createRouter(props);
+
+    //the validate Middleware
+    this.validateMiddleware = createMiddleware(props);
   }
 
   //run a use callback

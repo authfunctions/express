@@ -4,7 +4,7 @@ import {
   internal_sendError,
   internal_sendServerError,
 } from "../senders";
-import { IUserData, PassedInfos } from "../AuthInstance.class";
+import { IPayload, IUserData, PassedInfos } from "../AuthInstance.class";
 import { decodeToken, generateToken } from "../tokenUtils";
 
 export default ({ config, run_logger, run_use }: PassedInfos) => {
@@ -20,7 +20,7 @@ export default ({ config, run_logger, run_use }: PassedInfos) => {
       }
 
       //decode the refreshToken (verify it)
-      const [err1, payload] = decodeToken<Omit<IUserData, "hashedPassword">>(
+      const [err1, payload] = decodeToken<IPayload>(
         refreshToken,
         config.refreshTokenSecret,
       );
