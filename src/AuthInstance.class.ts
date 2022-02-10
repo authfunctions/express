@@ -108,13 +108,12 @@ export class AuthInstance {
     req: Request,
     res: Response,
     next: NextFunction,
-  ) => any;
+  ) => void;
 
   //constructor (config values defaulter)
   constructor(config: IConfig) {
-    //default the logger function
 
-    //default all useEvents to undefined
+    //defaults
     useEvents = {};
 
     //create the props configuration with defaults
@@ -165,7 +164,6 @@ export class AuthInstance {
 
   //the run logger function
   private run_logger(level: LogLevels, data: any) {
-    // console[level](data)
     loggerFunction(level, data);
   }
 }
