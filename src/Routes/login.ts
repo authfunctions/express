@@ -48,7 +48,7 @@ export default ({ config, run_logger, run_use, run_intercept }: PassedInfos) => 
       const intercept = await run_intercept("login", user);
 
       //check if reequest got intercepted
-      if (intercept && intercept[0]) return internal_sendError(res, 403, 3);
+      if (intercept && intercept[0]) return internal_sendError(res, 403, 24);
 
       //generate the refreshToken of the user
       const refreshToken = generateToken(

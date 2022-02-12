@@ -95,7 +95,7 @@ export default ({
       });
 
       //check if reequest got intercepted
-      if (intercept && intercept[0]) return internal_sendError(res, 403, 3);
+      if (intercept && intercept[0]) return internal_sendError(res, 403, 16);
 
       //store the user (run use event)
       const user = await run_use("storeUser", {
