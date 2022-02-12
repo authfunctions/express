@@ -147,6 +147,24 @@ auth.use("deleteToken", async ({ token }) => {
   }
 });
 
+//the intercept function for each login
+auth.intercept("login", (user) => {
+  //log the email of the user
+  console.info("[INFO]: User " + user.email + " logged in!");
+
+  //return no error
+  return [false];
+});
+
+//the intercept function for each register
+auth.intercept("register", (user) => {
+  //log the email of the user
+  console.info("[INFO]: User " + user.email + " registered!");
+
+  //return no error
+  return [false];
+});
+
 //a test endpoint to demonstrate the use
 app.get("/api/test", auth.validateMiddleware, (req, res) => {
   //get the payload of the user from the previous middleware via res.locals

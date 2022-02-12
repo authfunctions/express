@@ -1,6 +1,6 @@
 {
   "name": "@authfunctions/express",
-  "version": "3.1.4",
+  "version": "3.2.5",
   "main": "dist/index.js",
   "repository": "https://github.com/authfunctions/express.git",
   "author": "laurenz1606 <laurenz.rausche@gmail.com>",

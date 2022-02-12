@@ -10,7 +10,12 @@ import {
   internal_sendServerError,
 } from "../senders";
 
-export default ({ config, run_logger, run_use }: PassedInfos) => {
+export default ({
+  config,
+  run_logger,
+  run_use,
+  run_intercept,
+}: PassedInfos) => {
   return async (req: Request, res: Response) => {
     try {
       //get the email, username and password from the body
@@ -78,9 +83,23 @@ export default ({ config, run_logger, run_use }: PassedInfos) => {
       //hash the password
       const hashedPassword = await hash(password, 10);
 
+      //generate an id with uuidV4
+      const id = v4();
+
+      //run the interceptor
+      const intercept = await run_intercept("register", {
+        email: email,
+        hashedPassword: hashedPassword,
+        id: id,
+        username: username,
+      });
+
+      //check if reequest got intercepted
+      if (intercept && intercept[0]) return internal_sendError(res, 403, 3);
+
       //store the user (run use event)
       const user = await run_use("storeUser", {
-        id: v4(),
+        id: id,
         email: email,
         hashedPassword: hashedPassword,
         username: username,
