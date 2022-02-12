@@ -23,6 +23,10 @@ export type IPayload = Omit<IUserData, "hashedPassword">;
 export interface PassedInfos {
   run_use: RunUse;
   run_logger: any;
+  run_intercept: (
+    event: InterceptEvents,
+    data: IUserData,
+  ) => Promise<null | [boolean]>;
   config: {
     accessTokenSecret: string;
     refreshTokenSecret: string;
@@ -96,10 +100,21 @@ export type RunUse = <T extends UseEventDataTypes>(
 
 type LogLevels = "error" | "warn" | "info" | "debug";
 
+type InterceptEvents = "login" | "register";
+
+type InterceptFunction = (data: IUserData) => Promise<[boolean]> | [boolean];
+
+interface IInterceptEvents {
+  [key: string]: InterceptFunction | undefined;
+  login?: InterceptFunction;
+  register?: InterceptFunction;
+}
+
 export type LoggerFunction = (level: LogLevels, data: any) => void;
 
 let loggerFunction: LoggerFunction = (level, data) => console[level](data);
 let useEvents: IUseEvents = {};
+let interceptEvents: IInterceptEvents = {};
 
 export class AuthInstance {
   //type definitions
@@ -112,7 +127,6 @@ export class AuthInstance {
 
   //constructor (config values defaulter)
   constructor(config: IConfig) {
-
     //defaults
     useEvents = {};
 
@@ -127,6 +141,7 @@ export class AuthInstance {
       },
       run_logger: this.run_logger,
       run_use: this.run_use,
+      run_intercept: this.run_intercept,
     };
 
     //the express router
@@ -155,6 +170,23 @@ export class AuthInstance {
   ) {
     //set the useEvents[event] to the provided callback
     (useEvents[event] as any) = callback;
+  }
+
+  //the intercept function
+  public intercept(event: InterceptEvents, callback: InterceptFunction) {
+    interceptEvents[event] = callback;
+  }
+
+  //the run intercept function
+  private async run_intercept(
+    event: InterceptEvents,
+    data: IUserData,
+  ): Promise<null | [boolean]> {
+    //return null if the run event is undefined
+    if (!interceptEvents[event]) return null;
+
+    //run the intercept
+    return await (interceptEvents[event] as InterceptFunction)(data);
   }
 
   //the logger function

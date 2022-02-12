@@ -9,7 +9,7 @@ import { compare } from "bcrypt";
 import { generateToken } from "../tokenUtils";
 import getUserByLogin from "../getUserByLogin";
 
-export default ({ config, run_logger, run_use }: PassedInfos) => {
+export default ({ config, run_logger, run_use, run_intercept }: PassedInfos) => {
   return async (req: Request, res: Response) => {
     try {
       //get the login and password from the body
@@ -43,6 +43,12 @@ export default ({ config, run_logger, run_use }: PassedInfos) => {
         run_logger("info", "Password of the requested User is wrong!");
         return internal_sendError(res, 403, 23);
       }
+
+      //run the interceptor
+      const intercept = await run_intercept("login", user);
+
+      //check if reequest got intercepted
+      if (intercept && intercept[0]) return internal_sendError(res, 403, 3);
 
       //generate the refreshToken of the user
       const refreshToken = generateToken(
