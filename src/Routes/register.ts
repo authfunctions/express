@@ -120,7 +120,7 @@ export default ({
       //send data to client
       return internal_sendAuthData(res, 201, 10, null);
     } catch (err) {
-      run_logger("error", err);
+      run_logger("error", String(err));
       internal_sendServerError(res);
     }
   };

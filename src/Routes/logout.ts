@@ -67,7 +67,7 @@ export default ({ config, run_logger, run_use }: PassedInfos) => {
       //send data to client
       return internal_sendAuthData(res, 200, 30, null);
     } catch (err) {
-      run_logger("error", err);
+      run_logger("error", String(err));
       internal_sendServerError(res);
     }
   };
