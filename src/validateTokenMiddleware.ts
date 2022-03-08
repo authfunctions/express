@@ -32,12 +32,12 @@ export function createMiddleware(props: PassedInfos) {
       }
 
       //apply token payload to res.locals
-      res.locals.payload = payload
+      res.locals.payload = payload;
 
       //call next middleware
-      next()
+      next();
     } catch (err) {
-      props.run_logger("error", err);
+      props.run_logger("error", String(err));
       internal_sendServerError(res);
     }
   };
