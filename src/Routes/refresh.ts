@@ -68,7 +68,7 @@ export default ({ config, run_logger, run_use }: PassedInfos) => {
         accessToken: accessToken,
       });
     } catch (err) {
-      run_logger("error", err);
+      run_logger("error", String(err));
       internal_sendServerError(res);
     }
   };

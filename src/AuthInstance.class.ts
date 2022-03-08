@@ -22,7 +22,7 @@ export type IPayload = Omit<IUserData, "hashedPassword">;
 
 export interface PassedInfos {
   run_use: RunUse;
-  run_logger: any;
+  run_logger: (level: LogLevels, data: string) => void;
   run_intercept: (
     event: InterceptEvents,
     data: IUserData,
@@ -195,7 +195,7 @@ export class AuthInstance {
   }
 
   //the run logger function
-  private run_logger(level: LogLevels, data: any) {
+  private run_logger(level: LogLevels, data: string) {
     loggerFunction(level, data);
   }
 }
