@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
+import { JwtPayload } from "jsonwebtoken";
 import { createRouter } from "./router";
+import { createValidation } from "./tokenUtils";
 import { createMiddleware } from "./validateTokenMiddleware";
 import { PasswordValidationRules } from "./validationUtils";
 
@@ -124,6 +126,9 @@ export class AuthInstance {
     res: Response,
     next: NextFunction,
   ) => void;
+  public validate: (
+    token?: string,
+  ) => [0 | 1 | 2 | 5, (JwtPayload & IPayload) | null];
 
   //constructor (config values defaulter)
   constructor(config: IConfig) {
@@ -149,6 +154,9 @@ export class AuthInstance {
 
     //the validate Middleware
     this.validateMiddleware = createMiddleware(props);
+
+    //the plain validator
+    this.validate = createValidation(props);
   }
 
   //run a use callback

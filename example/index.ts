@@ -167,7 +167,7 @@ auth.intercept("register", (user) => {
 
 //a test endpoint to demonstrate the use
 app.get("/api/test", auth.validateMiddleware, (req, res) => {
-  //get the payload of the user from the previous middleware via res.locals
+  // get the payload of the user from the previous middleware via res.locals
   const Payload: IPayload = res.locals.payload;
 
   //send the username as an example response
@@ -177,5 +177,7 @@ app.get("/api/test", auth.validateMiddleware, (req, res) => {
 
 //make express listen on port 5000
 app.listen(5000, () => {
-  console.log("@authfunctions/express Demo Application running on Port 5000");
+  console.log(
+    "[INFO]: @authfunctions/express Demo Application running on Port 5000",
+  );
 });
