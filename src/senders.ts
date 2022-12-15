@@ -5,7 +5,7 @@ export function internal_sendAuthData(
   httpStatus: number,
   code: number,
   data: any,
-  err: boolean = false,
+  err: boolean = false
 ) {
   res.status(httpStatus).json({ auth: { code: code, err: err }, data: data });
 }
@@ -13,7 +13,7 @@ export function internal_sendAuthData(
 export function internal_sendError(
   res: Response,
   httpStatus: number,
-  code: number,
+  code: number
 ) {
   internal_sendAuthData(res, httpStatus, code, null, true);
 }
@@ -22,6 +22,10 @@ export function internal_sendServerError(res: Response) {
   internal_sendError(res, 500, 5);
 }
 
-export function sendData(res: Response, httpStatus: number, data: any) {
+export function sendData<DataType = any>(
+  res: Response,
+  httpStatus: number,
+  data: DataType
+) {
   internal_sendAuthData(res, httpStatus, 0, data, false);
 }
